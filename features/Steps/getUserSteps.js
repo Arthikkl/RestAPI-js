@@ -1,23 +1,30 @@
-const { assert } = require("console");
+const { expect } = require("chai");
 const { When, Then, Given  } = require("cucumber");
+const fetch = require('node-fetch');
 
-module.exports = { default: '--publish-quiet' }  
-  
+// module.exports = { default: '--publish-quiet' }  
+  let json;
  
 var baseurl ="https://reqres.in/api/users?page=2";
 
-this.Given('I request the users list',  function () {
+Given('I request the users list',  async () => {
  
-    let data =  fetch(baseurl)
-    let json = data.json
-    });
-  
+    let response =  await fetch(baseurl);
+    json = await response.json();
+    // console.log(json.data);
+    });  
 
-   this.Then('I should receive the status code {}', function () {
+   Then('I should receive the status code {int}', (statusCode) => {
+        expect(statusCode).to.be.equal(200);
         
-        var statuscode = 200;
-        assert.isNumber(statuscode, 'Correct status');
         
     });
 
-  
+    Then('i should get {string}', function (prop) {
+        const dataArray = json.data;
+        expect(dataArray.filter((occ) => occ[prop]).length).to.be.equal(dataArray.length);          
+      });
+
+
+
+     
